@@ -1,8 +1,8 @@
 defmodule Cascade.Producer do
   use GenStage
 
-  def start_link(state) do
-    GenStage.start_link(__MODULE__, state)
+  def start_link(state \\ nil) do
+    GenStage.start_link(__MODULE__, state, name: __MODULE__)
   end
 
   @spec init(any) :: {:producer, any}
@@ -15,7 +15,7 @@ defmodule Cascade.Producer do
     events =
       1..demand
       |> Enum.map(fn _ -> {:event, Enum.random(-10_000..10_000)} end)
-      |> IO.puts(label: "[producer] Produced ")
+      |> IO.inspect(label: "[producer] Produced ")
 
     {:noreply, events, state}
   end

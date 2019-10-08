@@ -6,9 +6,12 @@ defmodule Cascade.Application do
   use Application
 
   def start(_type, _args) do
+    import Supervisor.Spec, warn: false
+
     children = [
-      # Starts a worker by calling: Cascade.Worker.start_link(arg)
-      # {Cascade.Worker, arg}
+      worker(Cascade.Producer, []),
+      worker(Cascade.ProducerConsumer, [%{multiplier: 2.0}]),
+      worker(Cascade.Consumer, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
