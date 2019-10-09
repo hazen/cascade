@@ -1,12 +1,12 @@
 defmodule Cascade.ProducerConsumer do
   use GenStage
 
-  def start_link(state \\ %{multiplier: 2.0}) do
+  def start_link(state \\ %{multiplier: 2, sleep: 500}) do
     GenStage.start_link(__MODULE__, state, name: __MODULE__)
   end
 
   def init(state) do
-    {:producer_consumer, state, subscribe_to: [Cascade.Producer]}
+    {:producer_consumer, state, []}
   end
 
   @spec handle_events(list(), any(), map()) :: {:noreply, [term()], map()}
@@ -17,6 +17,7 @@ defmodule Cascade.ProducerConsumer do
         {:intermediate, value * Map.get(state, :multiplier, 1)}
       end)
 
+    Process.sleep(state.sleep)
     {:noreply, results, state}
   end
 end
